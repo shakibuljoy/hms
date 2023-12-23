@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        /* Basic styling for readability (adjust as needed) */
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        h1, h2, h3 {
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+        th, td {
+            padding: 4px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        p {
+            display: block;
+        }
+        p.right {
+            text-align: right;
+        }
+        .title {
+            color: chocolate;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            text-align: center;
+        }
+        p.title {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+        .logo {
+            height: 100px;
+            width: 150px;
+            position: absolute;
+            top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <img src="{% static 'images/bnhlogo.png' %}" alt="" class="logo">
+    <h2 class="title">Banskhali National  Hospital (Pvt.) Limited</h2>
+    <p class="title">Green Haider Complex, Chambol Bazar, Banskhali, Ctg. Mobile: 01819-624626, 01713-429668</p>
+    <div class="row">
+        <p>Invoice Number: {{ bill.id }}</p>
+        <p>Date: {{ bill.date_create }}</p>
+    </div>
+    
+    <div class="row">
+        <div class="col">
+            <p>Name: {{bill.patient.name}}</p>
+            <p>Father/Spouse: {{bill.patient.father}}</p>
+        </div>
+        <div class="col">
+            <p>Age: {{bill.patient.age}}</p>
+            <p>Doctor: {{bill.patient.doctor}}</p>
+        </div>
+    </div>
+    
+   
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if bill.registration_fee != 0 %}
+            <tr>
+                <td>Registration Fee</td>
+                <td>{{ bill.registration_fee }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.rent != 0 %}
+            <tr>
+                <td>General Seat Rent/Cabinet</td>
+                <td>{{ bill.rent}}</td>
+            </tr>
+            {%endif%}
+            {% if bill.physician_fee != 0 %}
+            <tr>
+                <td>Physician Fee</td>
+                <td>{{ bill.physician_fee }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.consultant_fee != 0 %}
+            <tr>
+                <td>Consultant Fee</td>
+                <td>{{ bill.consultant_fee }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.assistant_charge != 0 %}
+            <tr>
+                <td>Assistant Charge</td>
+                <td>{{ bill.assistant_charge }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.dressing != 0 %}
+            <tr>
+                <td>Dressing</td>
+                <td>{{ bill.dressing }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.oxigen != 0 %}
+            <tr>
+                <td>Oxigen</td>
+                <td>{{ bill.oxigen }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.nebulization != 0 %}
+            <tr>
+                <td>Nebulization</td>
+                <td>{{ bill.nebulization }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.iv_canula != 0 %}
+            <tr>
+                <td>I/V Cannula Charge</td>
+                <td>{{ bill.iv_canula }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.iv_canula != 0 %}
+            <tr>
+                <td>I/V Cannula Charge</td>
+                <td>{{ bill.iv_canula }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.cbg != 0 %}
+            <tr>
+                <td>CBG</td>
+                <td>{{ bill.cbg }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.ecg != 0 %}
+            <tr>
+                <td>ECG</td>
+                <td>{{ bill.ecg }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.catheter != 0 %}
+            <tr>
+                <td>Catheter</td>
+                <td>{{ bill.catheter }}</td>
+            </tr>
+            {%endif%}
+            {% if bill.catheter != 0 %}
+            <tr>
+                <td>Catheter</td>
+                <td>{{ bill.catheter }}</td>
+            </tr>
+            {%endif%}
+            <tr>
+                <hr>
+                <td>Service Charge (20%)</td>
+                <td>{{ bill.serv_charge }}</td>
+            </tr>
+            <tr style="border-bottom: 3px solid black; ">
+                <td>VAT</td>
+                <td>{{ bill.vat }}</td>
+            </tr>
+            <tr>
+                <td><strong>Discount</strong></td>
+                <td><strong>(-) {{ bill.discount }}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>{{ bill.grand_total }}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Due Amount</strong></td>
+                <td><strong>{{ bill.due_amount }}</strong></td>
+            </tr>
+            <tr>
+                
+                <td><strong>Paid Amount</strong></td>
+                <td><strong>{{ bill.paid }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

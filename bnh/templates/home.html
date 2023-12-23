@@ -1,0 +1,33 @@
+{%extends 'base.html'%}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Patient List</h2>
+    <a href="{% url 'bnh:create-patient' %}" class="btn btn-primary mb-2" style="color:white;">
+        Add Patient
+    </a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Father/Spouse</th>
+                <th>Age</th>
+                <th>Doctor</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patient_list %}
+                <tr>
+                    <td>{{ patient.name }}</td>
+                    <td>{{ patient.father }}</td>
+                    <td>{{ patient.age }}</td>
+                    <td>{{ patient.doctor }}</td>
+                    <td><a href="{% url 'bnh:bill-list' patient.id %}"><i style="font-size: 1.5rem;" class="fa-solid fa-file-invoice-dollar"></i></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

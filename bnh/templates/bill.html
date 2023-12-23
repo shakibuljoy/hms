@@ -1,0 +1,41 @@
+{%extends 'base.html'%}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Bill List</h2>
+    <a href="{% url 'bnh:create-bill' patient.id %}" class="btn btn-primary mb-2" style="color:white;">
+        Add Bill
+    </a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Bill No.</th>
+                <th>Patient</th>
+                <th>Father/Spouse</th>
+                <th>Doctor</th>
+                <th>Amount</th>
+                <th>Due</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bill in bill_list %}
+                <tr>
+                    <td>{{ bill.id }}</td>
+                    <td>{{ bill.patient }}</td>
+                    <td>{{ bill.patient.father }}</td>
+                    <td>{{ bill.patient.doctor }}</td>
+                    <td>{{ bill.grand_total }}</td>
+                    <td>{{ bill.due_amount }}</td>
+                    <td>
+                        <a href="{% url 'bnh:create-bill' patient.id %}"><i style="font-size: 1.5rem;" class="fa-solid fa-file-invoice-dollar"></i></a>
+                        <a href="{% url 'bnh:bill-payment' bill.id %}"><i style="font-size: 1.5rem;"  class="mx-2 fa-brands fa-amazon-pay"></i></a>
+                        <a href="{% url 'bnh:bill-pdf' bill.id %}"><i style="font-size: 1.5rem;"  class="mx-2 fa-solid fa-file-pdf"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}
