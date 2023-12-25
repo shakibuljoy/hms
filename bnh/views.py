@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from .forms import DoctorForm, PatientForm, BillForm, BillPaymentForm
 from .models import Doctor, Patient, Bill
-from .pdf import render_to_pdf
 
 
 def home(request):
@@ -91,4 +90,4 @@ def bill_pdf(request, pk):
     context = {
         'bill': bill_instance,
     }
-    return render_to_pdf('invoice.html', context)
+    return render(request, 'invoice.html', context)
