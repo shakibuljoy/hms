@@ -52,6 +52,16 @@ class Patient(models.Model):
     def __str__(self):
         return self.name
 
+
+class Item(models.Model):
+    name = models.CharField(max_length=120)
+    code = models.CharField(max_length=450, unique=True)
+    rate = models.DecimalField(default=0, decimal_places=2, max_digits=40)
+
+    def __str__(self):
+        return self.name
+
+
 class Bill(models.Model):
     id = models.AutoField(primary_key=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -105,6 +115,14 @@ class Bill(models.Model):
     def due_amount(self):
         return self.grand_total()-self.paid
 
+class ItemCount(models.Model):
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    unit = models.DecimalField(default=1, decimal_places=2, max_digits=40)
+
+
+    def amount(self):
+        return round(self.item * self.unit)
 
 class BillPayment(models.Model):
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE)

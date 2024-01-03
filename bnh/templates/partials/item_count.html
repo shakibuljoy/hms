@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Create an Item</h2>
+    <form method="post" id="item-form">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div class="formset-container">
+            {% for form in formset %}
+                <div class="formset-row">
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" class="btn btn-secondary" id="add-item">Add Item</button>
+        <input type="submit" value="Submit" class="btn btn-primary">
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const formsetContainer = document.querySelector('.formset-container');
+    const addItemButton = document.getElementById('add-item');
+    const formsetPrefix = '{{ formset.prefix }}';
+    const formsetTotalForms = '{{ formset.total_form_count }}';
+    const totalForms = document.getElementById('id_{{formset.prefix}}-TOTAL_FORMS');
+    const selectedOptions = document.getElementById('id__itemcount_-0-item').innerHTML;
+
+    let formIndex = formsetTotalForms;
+
+    addItemButton.addEventListener('click', function() {
+        // Create a new DOM element from the HTML string
+        const newForm = document.createElement('div');
+        newForm.className = 'formset-row';
+        newForm.innerHTML = '<p><label for=id__itemcount_-'+formIndex+'-item>Item:</label> <select class=form-control id=id__itemcount_-'+formIndex+'-item name=_itemcount_-'+formIndex+'-item>'+selectedOptions+'</select><p><label for=id__itemcount_-'+formIndex+'-unit>Unit:</label> <input class=form-control id=id__itemcount_-'+formIndex+'-unit name=_itemcount_-'+formIndex+'-unit step=0.01 type=number value=0></div>';
+
+        // Append the new form element to the container
+        formsetContainer.appendChild(newForm);
+
+        formIndex++;
+        totalForms.value++;
+        console.log(formIndex);
+    });
+});
+
+</script>
+
+{% endblock content %}

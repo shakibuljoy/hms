@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from .forms import DoctorForm, PatientForm, BillForm, BillPaymentForm
-from .models import Doctor, Patient, Bill
+from .forms import DoctorForm, PatientForm, BillForm, BillPaymentForm, ItemForm, item_formset
+from .models import Doctor, Patient, Bill, Item
+from django.contrib import messages
 
 
 def home(request):
@@ -35,6 +37,52 @@ def patient_create(request):
             form.save()
             return redirect('bnh:home')
     return render(request, 'partials/create_patient.html', {'form':form})
+
+
+@login_required
+def item_create(request):
+    if request.POST:
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, "Succesfully saved!")
+            return redirect('bnh:item-list')
+    context = {
+        'form': ItemForm()
+    }
+    return render(request, 'partials/item_create.html', context)
+
+@login_required
+def item_list(request):
+    items = Item.objects.all()
+    context = {
+        'items': items
+    }
+    return render(request, 'item_list.html', context)
+
+
+@login_required
+def item_count_create(request, pk):
+    bill = get_object_or_404(Bill, pk=pk)
+    items = Item.objects.all()
+    if request.POST:
+        formset = item_formset(request.POST, prefix='_itemcount_')
+        if formset.is_valid():
+            for form in formset:
+                if form.cleaned_data.get('item') is not None:
+                    item_count = form.save(commit=False)
+                    print("Item Commit Flase")
+                    item_count.bill = bill
+                    print("Item Bill Flase")
+                    item_count.save()
+            return HttpResponse("Succesfully saved")
+    formset = item_formset(prefix='_itemcount_')
+    context = {
+        'formset': formset,
+        'items': items
+    }
+    return render(request, 'partials/inline_form.html', context)
+
 
 @login_required
 def bill_create(request, pk):
@@ -91,3 +139,7 @@ def bill_pdf(request, pk):
         'bill': bill_instance,
     }
     return render(request, 'invoice.html', context)
+
+def get_price(request, pk):
+    item = Item.objects.get(pk=pk).rate
+    return JsonResponse({'price':item})

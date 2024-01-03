@@ -1,0 +1,31 @@
+{%extends 'base.html'%}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Patient List</h2>
+    <a href="{% url 'bnh:item-create' %}" class="btn btn-primary mb-2" style="color:white;">
+        Add Item
+    </a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Rate</th>
+                <th>Doctor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.code }}</td>
+                    <td>{{ item.rate }}</td>
+                    <td><a href="{% url 'bnh:item-list' %}"><i style="font-size: 1.5rem;" class="fa-solid fa-file-invoice-dollar"></i></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

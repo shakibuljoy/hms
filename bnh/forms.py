@@ -1,5 +1,6 @@
 from django import forms
-from .models import Doctor, Patient, Bill, BillPayment
+from django.forms import formset_factory
+from .models import Doctor, Patient, Bill, BillPayment, Item, ItemCount
 
 class DoctorForm(forms.ModelForm):
     class Meta:
@@ -39,6 +40,29 @@ class PatientForm(forms.ModelForm):
             # 'admit_time': You might not want to include this in the form for user input
         }
 
+
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ['name', 'code', 'rate']
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'code': forms.TextInput(attrs={'class': 'form-control'}),
+            'rate': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ItemAmountForm(forms.ModelForm):
+    class Meta:
+        model = ItemCount
+        fields= [ 'item', 'unit']
+        widgets = {
+            'item': forms.Select(attrs={'class': 'form-control', 'onchange':'itemChange(this)'}),
+            'unit': forms.NumberInput(attrs={'class': 'form-control', 'step':1}),
+        }
+
+item_formset = formset_factory(ItemAmountForm, extra=2)
 
 class BillForm(forms.ModelForm):
     class Meta:
