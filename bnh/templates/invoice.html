@@ -81,102 +81,26 @@
         <thead>
             <tr>
                 <th>Item</th>
+                <th>Unit</th>
                 <th>Amount</th>
             </tr>
         </thead>
         <tbody>
-            {% if bill.registration_fee != 0 %}
+            {% for item in item_list %}
             <tr>
-                <td>Registration Fee</td>
-                <td>{{ bill.registration_fee }}</td>
+                <td>{{item.item.name}}</td>
+                <td>{{item.unit}}</td>
+                <td>{{item.amount}}</td>
             </tr>
-            {%endif%}
-            {% if bill.rent != 0 %}
+            {% endfor %}
+            <hr class="underline">
             <tr>
-                <td>General Seat Rent/Cabinet</td>
-                <td>{{ bill.rent}}</td>
+                <td><strong>Service Charge</strong></td>
+                <td><strong>{{ bill.serv_charge }}</strong></td>
             </tr>
-            {%endif%}
-            {% if bill.physician_fee != 0 %}
             <tr>
-                <td>Physician Fee</td>
-                <td>{{ bill.physician_fee }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.consultant_fee != 0 %}
-            <tr>
-                <td>Consultant Fee</td>
-                <td>{{ bill.consultant_fee }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.assistant_charge != 0 %}
-            <tr>
-                <td>Assistant Charge</td>
-                <td>{{ bill.assistant_charge }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.dressing != 0 %}
-            <tr>
-                <td>Dressing</td>
-                <td>{{ bill.dressing }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.oxigen != 0 %}
-            <tr>
-                <td>Oxigen</td>
-                <td>{{ bill.oxigen }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.nebulization != 0 %}
-            <tr>
-                <td>Nebulization</td>
-                <td>{{ bill.nebulization }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.iv_canula != 0 %}
-            <tr>
-                <td>I/V Cannula Charge</td>
-                <td>{{ bill.iv_canula }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.iv_canula != 0 %}
-            <tr>
-                <td>I/V Cannula Charge</td>
-                <td>{{ bill.iv_canula }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.cbg != 0 %}
-            <tr>
-                <td>CBG</td>
-                <td>{{ bill.cbg }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.ecg != 0 %}
-            <tr>
-                <td>ECG</td>
-                <td>{{ bill.ecg }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.catheter != 0 %}
-            <tr>
-                <td>Catheter</td>
-                <td>{{ bill.catheter }}</td>
-            </tr>
-            {%endif%}
-            {% if bill.catheter != 0 %}
-            <tr>
-                <td>Catheter</td>
-                <td>{{ bill.catheter }}</td>
-            </tr>
-            {%endif%}
-            <tr>
-                <hr>
-                <td>Service Charge (20%)</td>
-                <td>{{ bill.serv_charge }}</td>
-            </tr>
-            <tr style="border-bottom: 3px solid black; ">
-                <td>VAT</td>
-                <td>{{ bill.vat }}</td>
+                <td><strong>VAT</strong></td>
+                <td><strong>{{ bill.vat }}</strong></td>
             </tr>
             <tr>
                 <td><strong>Discount</strong></td>

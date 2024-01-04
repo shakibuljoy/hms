@@ -65,28 +65,7 @@ class Item(models.Model):
 class Bill(models.Model):
     id = models.AutoField(primary_key=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    registration_fee = models.IntegerField(default=0)
-    rent = models.IntegerField(default=0, verbose_name='General Seat Rent\n/Cabinet')
-    physician_fee = models.IntegerField(default=0)
-    consultant_fee = models.IntegerField(default=0)
-    assistant_charge = models.IntegerField(default=0)
-    dressing = models.IntegerField(default=0)
-    oxigen = models.IntegerField(default=0)
-    nebulization = models.IntegerField(default=0)
-    iv_canula = models.IntegerField(default=0, verbose_name='I\n/V Cannula Charge')
-    cbg = models.IntegerField(default=0, verbose_name='CBG')
-    ecg = models.IntegerField(default=0, verbose_name='ECG')
-    catheter = models.IntegerField(default=0)
-    enema = models.IntegerField(default=0, verbose_name='Enema Simplex')
-    opc = models.IntegerField(default=0, verbose_name='Stomach Wash (OPC)')
-    ot = models.IntegerField(default=0, verbose_name='O.T (Mini)')
-    delivary_charge = models.IntegerField(default=0)
-    pathology = models.IntegerField(default=0)
-    observation_3hrs = models.IntegerField(default=0)
-    observation_5hrs = models.IntegerField(default=0)
-    ryles_tube = models.IntegerField(default=0)
-    suction = models.IntegerField(default=0)
-    phototherapy = models.IntegerField(default=0)
+    charges = models.DecimalField(default=0, decimal_places=2, max_digits=70)
     serv_charge = models.IntegerField(default=0, verbose_name='Service Charge 20%')
     discount = models.IntegerField(default=0)
     vat = models.IntegerField(default=0, verbose_name='VAT %')
@@ -99,10 +78,7 @@ class Bill(models.Model):
     def calculate_amount(self):
 
         # Gather relevant charges (adjust based on your logic)
-        total_charges = (self.registration_fee + self.rent + self.physician_fee + self.consultant_fee + self.assistant_charge
-            + self.dressing + self.oxigen + self.nebulization + self.iv_canula + self.cbg + self.ecg + self.catheter
-            + self.enema + self.opc + self.ot + self.delivary_charge + self.pathology + self.observation_3hrs
-            + self.observation_5hrs + self.ryles_tube + self.suction + self.phototherapy)
+        total_charges = round(self.charges,2)
 
         
 
@@ -122,7 +98,7 @@ class ItemCount(models.Model):
 
 
     def amount(self):
-        return round(self.item * self.unit)
+        return round(self.item.rate * self.unit)
 
 class BillPayment(models.Model):
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE)

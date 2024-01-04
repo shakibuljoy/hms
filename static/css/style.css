@@ -8334,3 +8334,12 @@ a[data-toggle="collapse"] {
   .form-control:-moz-placeholder {
     /* Firefox 18- */
     color: rgba(0, 0, 0, 0.3); }
+
+  .ingroup  {
+    max-width: 250px;
+    float: right;
+  }
+  hr.underline {
+    width: 100%;
+    border-width: 3px;
+  }

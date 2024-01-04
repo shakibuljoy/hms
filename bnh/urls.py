@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (home, doctor_create, patient_create, bill_create, bill_list, bill_payment,
-                     bill_pdf, item_list, item_create, item_count_create, get_price
+                     bill_pdf, item_list, item_create, get_price
                      )
 
 
@@ -16,6 +16,5 @@ urlpatterns = [
     path('bill-pdf/<pk>/', bill_pdf, name='bill-pdf'),
     path('item-create/', item_create, name='item-create'),
     path('item-list/', item_list, name='item-list'),
-    path('item-count/<pk>/', item_count_create, name='item-count-create'),
     path('get_price/<pk>/', get_price, name='get-price'),
 ]

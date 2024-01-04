@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .forms import DoctorForm, PatientForm, BillForm, BillPaymentForm, ItemForm, item_formset
-from .models import Doctor, Patient, Bill, Item
+from .models import Doctor, Patient, Bill, Item, ItemCount
 from django.contrib import messages
 
 
@@ -62,45 +62,57 @@ def item_list(request):
 
 
 @login_required
-def item_count_create(request, pk):
-    bill = get_object_or_404(Bill, pk=pk)
-    items = Item.objects.all()
+def bill_create(request, pk):
+    patient = get_object_or_404(Patient, pk=pk)
     if request.POST:
         formset = item_formset(request.POST, prefix='_itemcount_')
-        if formset.is_valid():
+        bill_form = BillForm(request.POST)
+        if formset.is_valid() and bill_form.is_valid():
+            bill = bill_form.save(commit=False)
+            bill.patient = patient
+            bill.save()
             for form in formset:
+                print(form.cleaned_data.get('item'))
                 if form.cleaned_data.get('item') is not None:
                     item_count = form.save(commit=False)
                     print("Item Commit Flase")
                     item_count.bill = bill
                     print("Item Bill Flase")
                     item_count.save()
+                    # Item Charges Calculation
+                    charges_item = ItemCount.objects.filter(bill=bill)
+                    charge_amount = 0
+                    for item in  charges_item:
+                        charge_amount+=item.amount()
+                    bill.charges = charge_amount
+                    bill.save()
             return HttpResponse("Succesfully saved")
     formset = item_formset(prefix='_itemcount_')
+    bill_form = BillForm()
     context = {
         'formset': formset,
-        'items': items
+        'bill_form':bill_form
     }
     return render(request, 'partials/inline_form.html', context)
 
 
-@login_required
-def bill_create(request, pk):
-    patient = get_object_or_404(Patient, id=pk)
-    form = BillForm()
-    if request.POST:
-        form = BillForm(request.POST)
-        if form.is_valid():
-            bill = form.save(commit=False)
-            bill.patient = patient
-            bill.save()
-            service_charge = bill.calculate_amount() * 0.20
-            bill.serv_charge = round(service_charge,2)
-            bill.save()
+# @login_required
+# def bill_create(request, pk):
+#     patient = get_object_or_404(Patient, id=pk)
+#     form = BillForm()
+#     if request.POST:
+#         form = BillForm(request.POST)
+#         if form.is_valid():
+#             bill = form.save(commit=False)
+#             bill.patient = patient
+#             bill.save()
+#             service_charge = bill.calculate_amount() * 0.20
+#             bill.serv_charge = round(service_charge,2)
+#             bill.save()
             
 
-            return redirect('bnh:home')
-    return render(request, 'partials/create_bill.html', {'form':form})
+#             return redirect('bnh:home')
+#     return render(request, 'partials/create_bill.html', {'form':form})
 
 @login_required
 def bill_list(request,pk):
@@ -133,10 +145,12 @@ def bill_payment(request, pk):
 
 def bill_pdf(request, pk):
     bill_instance = get_object_or_404(Bill, pk=pk)
+    item_list = ItemCount.objects.filter(bill=bill_instance)
 
     # Pass the field information to the template
     context = {
         'bill': bill_instance,
+        'item_list':item_list
     }
     return render(request, 'invoice.html', context)
 

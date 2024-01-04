@@ -4,34 +4,77 @@
 
 <div class="container mt-4">
     <form method="post" id="item-form">
-    <table style="text-align: center;" class="table table-striped">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Price</th>
-                <th style="width:150px;">Unit</th>
-                <th>Amount</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody class="formset-container">
-                {% csrf_token %}
-                {{ formset.management_form }}
-                {%for form in formset%}
-                <tr class="formset-row">
-                    <td>{{form.item}}</td>
-                    <td class="price">0.0</td>
-                    <td onchange="unitChange(this)" onkeyup="unitChange(this)" class="unit">{{form.unit}}</td> 
-                    <td class="amount">0.0</td> 
-                    <td class="add-button"> 
-                        <span class="add-item btn btn-primary">+</span> 
-                        <span class="del-item btn btn-danger">-</span>
-                     </td> 
-                </tr>
-                {%endfor%}
-                <button class="btn btn-warning mb-2" >Submit</button>
-        </tbody>
-    </table>
+        <!-- Item Count Form Started -->
+        <div class="row">
+            <table style="text-align: center;" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th style="width:150px;">Unit</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="formset-container">
+                        {% csrf_token %}
+                        {{ formset.management_form }}
+                        {%for form in formset%}
+                        <tr class="formset-row">
+                            <td>{{form.item}}</td>
+                            <td class="price">0.0</td>
+                            <td onchange="unitChange(this)" onkeyup="unitChange(this)" class="unit">{{form.unit}}</td> 
+                            <td class="amount">0.0</td> 
+                            <td class="add-button"> 
+                                <span class="add-item btn btn-primary">+</span> 
+                                <span class="del-item btn btn-danger">-</span>
+                             </td> 
+                        </tr>
+                        {%endfor%}
+                        <button id="submitBtn" class="btn btn-warning mb-2" >Submit</button>
+                </tbody>
+            </table>
+        </div>
+        <!-- Item Count Form Ended -->
+        <!-- Bill Form Started -->
+        <div class="row">
+            <hr class="underline">
+            <div class="col-md-6">
+                <h4>Total Charges <span id="totalCharges">00.00</span></h4>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-default">Service Charge</span>
+                    </div>
+                    {{bill_form.serv_charge}}
+                  </div>
+        
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-default">VAT</span>
+                    </div>
+                    {{bill_form.vat}}
+                  </div>
+        
+                <div class="input-group mb-3 ">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-default">Discount</span>
+                    </div>
+                    {{bill_form.discount}}
+                  </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-default">Deposit</span>
+                    </div>
+                    {{bill_form.paid}}
+                  </div>
+                  <h4>Total Bill: <span id="totalBill">00.00</span></h4>
+            </div>
+        </div>
+        <!-- Bill Form Ended -->
+    
 </form>
 </div>
 
@@ -43,6 +86,11 @@
  document.addEventListener('DOMContentLoaded', function () {
     const formsetContainer = document.querySelector('.formset-container'); // Add a container class to your formset
     const selectedOptions = document.getElementById('id__itemcount_-0-item').innerHTML;
+    const formsetTotalForms = '{{ formset.total_form_count }}';
+    const totalForms = document.getElementById('id_{{formset.prefix}}-TOTAL_FORMS');
+
+    
+    let formIndex = formsetTotalForms;
 
     formsetContainer.addEventListener('click', function (event) {
         const target = event.target;
@@ -55,7 +103,6 @@
     });
 
     function addItem() {
-        const formIndex = formsetContainer.querySelectorAll('.formset-row').length;
         const newForm = document.createElement('tr');
         newForm.className = 'formset-row';
         newForm.innerHTML = `<td><select class="form-control" id="id__itemcount_-${formIndex}-item" name="_itemcount_-${formIndex}-item" onchange="itemChange(this)">${selectedOptions}</select></td>
@@ -68,11 +115,15 @@
             </td>`;
 
         formsetContainer.appendChild(newForm);
+        formIndex++;
+        totalForms.value++;
     }
 
     function delItem(target) {
         const targetForm = target.closest('.formset-row');
         targetForm.remove();
+        formIndex--;
+        totalForms.value--;
     }
 });
 
@@ -91,6 +142,7 @@ function itemChange(selectElement) {
       const unitElement = selectElement.closest('tr').querySelector('.unit').querySelector('input').value;
       priceElement.textContent = data.price; // Update the price in the cell
       amountElement.textContent = data.price * unitElement; 
+      amountChanged()
     })
     .catch(error => console.error('Error fetching price:', error));
 }
@@ -101,7 +153,30 @@ function itemChange(selectElement) {
         const itemRate = selectedElemet.closest('tr').querySelector('.price').textContent;
         const itemAmount = selectedElemet.closest('tr').querySelector('.amount');
         itemAmount.textContent = itemRate * getValue; 
-        console.log(selectedElemet.querySelector('input').value)
+        amountChanged()
+    }
+    function amountChanged(){
+        const popo = document.querySelectorAll('.amount')
+        const amountField = document.querySelector('input[name="serv_charge"]')
+        const vatField = document.querySelector('input[name="vat"]')
+        const discountField = document.querySelector('input[name="discount"]')
+        const buttonSubmit = document.getElementById('submitBtn');
+        const totalBill = document.getElementById('totalBill');
+        const totalDisplay = document.getElementById('totalCharges');
+        var totalAmount = 0
+        popo.forEach(function(amount) {
+            totalAmount += parseFloat(amount.textContent);
+        });
+        totalDisplay.textContent = totalAmount.toFixed(2);
+        let calculatedAmount = (totalAmount * 0.2).toFixed(2);
+        amountField.value = calculatedAmount;
+        totalBill.textContent = Number(totalAmount) + Number(calculatedAmount) + Number(vatField.value) - Number(discountField.value);
+        if (totalAmount < 0) {
+            buttonSubmit.style.display = 'none';
+        }else{
+            buttonSubmit.style.display = 'block';
+        }
     }
 </script>
+
 {%endblock jsscript%}

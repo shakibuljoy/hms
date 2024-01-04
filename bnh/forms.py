@@ -67,36 +67,13 @@ item_formset = formset_factory(ItemAmountForm, extra=2)
 class BillForm(forms.ModelForm):
     class Meta:
         model = Bill
-        fields = '__all__'
-        exclude = ['patient', 'serv_charge', 'vat']
+        fields = ['serv_charge', 'discount', 'vat', 'paid']
 
         widgets = {
-            'patient': forms.Select(attrs={'class': 'form-control'}),
-            'registration_fee': forms.NumberInput(attrs={'class': 'form-control'}),
-            'rent': forms.NumberInput(attrs={'class': 'form-control'}),
-            'physician_fee': forms.NumberInput(attrs={'class': 'form-control'}),
-            'consultant_fee': forms.NumberInput(attrs={'class': 'form-control'}),
-            'assistant_charge': forms.NumberInput(attrs={'class': 'form-control'}),
-            'dressing': forms.NumberInput(attrs={'class': 'form-control'}),
-            'oxigen': forms.NumberInput(attrs={'class': 'form-control'}),
-            'nebulization': forms.NumberInput(attrs={'class': 'form-control'}),
-            'iv_canula': forms.NumberInput(attrs={'class': 'form-control'}),
-            'cbg': forms.NumberInput(attrs={'class': 'form-control'}),
-            'ecg': forms.NumberInput(attrs={'class': 'form-control'}),
-            'catheter': forms.NumberInput(attrs={'class': 'form-control'}),
-            'enema': forms.NumberInput(attrs={'class': 'form-control'}),
-            'opc': forms.NumberInput(attrs={'class': 'form-control'}),
-            'ot': forms.NumberInput(attrs={'class': 'form-control'}),
-            'delivary_charge': forms.NumberInput(attrs={'class': 'form-control'}),
-            'pathology': forms.NumberInput(attrs={'class': 'form-control'}),
-            'observation_3hrs': forms.NumberInput(attrs={'class': 'form-control'}),
-            'observation_5hrs': forms.NumberInput(attrs={'class': 'form-control'}),
-            'ryles_tube': forms.NumberInput(attrs={'class': 'form-control'}),
-            'suction': forms.NumberInput(attrs={'class': 'form-control'}),
-            'phototherapy': forms.NumberInput(attrs={'class': 'form-control'}),
-            'serv_charge': forms.NumberInput(attrs={'class': 'form-control'}),
-            'discount': forms.NumberInput(attrs={'class': 'form-control'}),
-            'vat': forms.NumberInput(attrs={'class': 'form-control'}),
+            'serv_charge': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged()', 'onkeyup': 'amountChanged()'}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged()', 'onkeyup': 'amountChanged()'}),
+            'vat': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged()', 'onkeyup': 'amountChanged()'}),
+            'paid': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged()', 'onkeyup': 'amountChanged()'}),
         }
 
 class BillPaymentForm(forms.ModelForm):
