@@ -21,6 +21,7 @@ class PatientForm(forms.ModelForm):
         fields = '__all__'  # You can specify the fields you want to include if needed
 
         widgets = {
+            'patient_type': forms.Select(attrs={'class': 'form-control', 'onchange':'typeChange(this)'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'father': forms.TextInput(attrs={'class': 'form-control'}),
             'mother': forms.TextInput(attrs={'class': 'form-control'}),
@@ -44,11 +45,11 @@ class PatientForm(forms.ModelForm):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['name', 'code', 'rate']
+        fields = ['name', 'description', 'rate']
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'code': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.TextInput(attrs={'class': 'form-control'}),
             'rate': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 

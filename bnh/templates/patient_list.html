@@ -8,17 +8,17 @@
     </a>
     <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'bnh:patient-list' %}">All</a>
+          <a id="allFilter" class="nav-link" href="{% url 'bnh:patient-list' %}">All</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'bnh:patient-list' %}?type=Out%20Door">Out Door</a>
+          <a id="outDoor" class="nav-link" href="{% url 'bnh:patient-list' %}?type=Out%20Door">Out Door</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'bnh:patient-list' %}?type=In%20Door">In Door</a>
+          <a id="inDoor" class="nav-link" href="{% url 'bnh:patient-list' %}?type=In%20Door">In Door</a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
+        </li> -->
       </ul>
     <table class="table table-striped">
         <thead>
@@ -28,6 +28,7 @@
                 <th>Father/Spouse</th>
                 <th>Age</th>
                 <th>Doctor</th>
+                <th>In/Out</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -39,6 +40,7 @@
                     <td>{{ patient.father }}</td>
                     <td>{{ patient.age }}</td>
                     <td>{{ patient.doctor }}</td>
+                    <td>{{ patient.patient_type }}</td>
                     <td><a href="{% url 'bnh:bill-list' patient.id %}"><i style="font-size: 1.5rem;" class="fa-solid fa-file-invoice-dollar"></i></a></td>
                 </tr>
             {% endfor %}
@@ -47,3 +49,26 @@
 </div>
 
 {% endblock content %}
+
+{%block jsscript%}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedFilter = urlParams.get('type');
+        const allFilter = document.getElementById('allFilter');
+        const inDoor = document.getElementById('inDoor');
+        const outDoor = document.getElementById('outDoor');
+        if (selectedFilter == 'In Door'){
+            inDoor.setAttribute('aria-current', 'page')
+            inDoor.classList.add('active')
+        }else if (selectedFilter == 'Out Door') {
+            outDoor.setAttribute('aria-current', 'page')
+            outDoor.classList.add('active')
+        }else{
+            allFilter.setAttribute('aria-current', 'page')
+            allFilter.classList.add('active')
+        }
+    });
+
+</script>
+{%endblock jsscript%}

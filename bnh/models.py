@@ -19,6 +19,10 @@ b_group = [
     ('O+', 'O +'),
     ('O-', 'O -')
 ]
+admit_type = [
+    ('In Door','In Door'),
+    ('Out Door','Out Door')
+]
 class Doctor(models.Model):
     name = models.CharField(max_length=120)
     dc_degree = models.CharField(max_length=120)
@@ -31,15 +35,16 @@ class Doctor(models.Model):
         return self.name
 
 class Patient(models.Model):
+    patient_type = models.CharField(max_length=50, choices=admit_type)
     name = models.CharField(max_length=120)
     father = models.CharField(max_length=120)
-    mother = models.CharField(max_length=120)
+    mother = models.CharField(max_length=120, blank=True, null=True)
     gender = models.CharField(max_length=50, choices=gender_ch)
-    village = models.CharField(max_length=120)
+    village = models.CharField(max_length=120, blank=True, null=True)
     post = models.CharField(max_length=120, blank=True, null=True)
-    police_station = models.CharField(max_length=120)
-    district = models.CharField(max_length=120)
-    ref_by = models.CharField(max_length=120)
+    police_station = models.CharField(max_length=120, blank=True, null=True)
+    district = models.CharField(max_length=120, blank=True, null=True)
+    ref_by = models.CharField(max_length=120, blank=True, null=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True, blank=True)
     age =  models.IntegerField(default=0)
     mobile = models.CharField(max_length=50)
@@ -55,7 +60,7 @@ class Patient(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=120)
-    code = models.CharField(max_length=450, unique=True)
+    description = models.CharField(max_length=1020)
     rate = models.DecimalField(default=0, decimal_places=2, max_digits=40)
 
     def __str__(self):

@@ -30,10 +30,16 @@
                 <li>
                     <a href="{% url 'bnh:create-patient' %}">create patient</a>
                 </li>
+                <li>
+                    <a href="{% url 'bnh:patient-list' %}">Patient</a>
+                </li>
 	            </ul>
 	          </li>
 	          <li>
 	              <a href="{%url 'bnh:doctor' %}">Doctor</a>
+	          </li>
+	          <li>
+	              <a href="{%url 'bnh:item-list' %}">Item</a>
 	          </li>
 	          {% comment %} <li>
               <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>

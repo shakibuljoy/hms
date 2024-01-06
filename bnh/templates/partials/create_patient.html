@@ -6,3 +6,32 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock content %}
+{%block jsscript%}
+<script>
+    function typeChange(elem) {
+    const allInputs = document.querySelectorAll('input');
+    const requiredInputs = document.querySelectorAll('input[required]');
+
+    if (elem.value === 'Out Door') {
+        allInputs.forEach(input => {
+        if (!input.required) {
+            const associatedLabel = document.querySelector(`label[for="${input.id}"]`);
+            if (associatedLabel) { // Ensure label exists
+            associatedLabel.style.display = 'none';
+            }
+            input.style.display = 'none';
+        }
+        });
+    } else if (elem.value === 'In Door') {
+        allInputs.forEach(input => {
+        const associatedLabel = document.querySelector(`label[for="${input.id}"]`);
+        if (associatedLabel) { // Ensure label exists
+            associatedLabel.style.display = '';
+        }
+        input.style.display = '';
+        });
+    }
+}
+
+</script>
+{%endblock jsscript%}

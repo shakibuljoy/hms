@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (home, doctor_create, patient_create, bill_create, bill_list, bill_payment,
-                     bill_pdf, item_list, item_create, get_price
+                     bill_pdf, item_list, item_create, get_price, patient_list
                      )
 
 
@@ -8,6 +8,7 @@ app_name = 'bnh'
 
 urlpatterns = [
     path('', home, name='home'),
+    path('patient/', patient_list, name='patient-list'),
     path('doctor/', doctor_create, name='doctor'),
     path('patient-create/', patient_create, name='create-patient'),
     path('bill-create/<pk>/', bill_create, name='create-bill'),

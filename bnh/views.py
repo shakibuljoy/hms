@@ -13,6 +13,19 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
+
+def patient_list(request):
+    filter_type = request.GET.get('type')
+    if filter_type:
+        patient_list = Patient.objects.filter(patient_type=filter_type)
+    else:
+        patient_list = Patient.objects.all()
+    context = {
+        'patient_list':patient_list
+    }
+    return render(request, 'patient_list.html', context)
+
+
 @login_required
 def doctor_create(request):
     doctor_list = Doctor.objects.all()
