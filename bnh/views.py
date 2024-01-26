@@ -58,7 +58,7 @@ def patient_create(request):
         form = PatientForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('bnh:home')
+            return redirect('bnh:patient-list')
     return render(request, 'partials/create_patient.html', {'form':form})
 
 
@@ -82,6 +82,25 @@ def item_list(request):
         'items': items
     }
     return render(request, 'item_list.html', context)
+
+@login_required
+def item_detail(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    total_amount = 0
+    total_unit = 0
+    try:
+        item_count = ItemCount.objects.filter(item=item)
+        for i in item_count:
+            total_amount += i.amount()
+            total_unit += i.unit
+    except:
+        pass
+    context = {
+        'item': item,
+        'total_amount': total_amount,
+        'total_unit': total_unit,
+    }
+    return render(request, 'item_detail.html', context)
 
 
 @login_required

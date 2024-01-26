@@ -106,7 +106,7 @@ class ItemCount(models.Model):
 
 
     def amount(self):
-        return round(self.item.rate * self.unit)
+        return round(self.item.rate * self.unit, 2)
 
 class BillPayment(models.Model):
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE)

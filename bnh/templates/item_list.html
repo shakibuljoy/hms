@@ -21,7 +21,7 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.description }}</td>
                     <td>{{ item.rate }}</td>
-                    <td><a href="{% url 'bnh:item-list' %}"><i style="font-size: 1.5rem;" class="fa-solid fa-file-invoice-dollar"></i></a></td>
+                    <td><a href="{% url 'bnh:item-detail' item.id %}"><i style="font-size: 1.5rem;" class="fa-solid fa-file-invoice-dollar"></i></a></td>
                 </tr>
             {% endfor %}
         </tbody>

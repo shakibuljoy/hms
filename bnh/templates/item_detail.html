@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2>Item Detail</h2>
+    <dl class="row">
+
+      <dt class="col-sm-3">Name:</dt>
+      <dd class="col-sm-9">{{ item.name }}</dd>
+
+      <dt class="col-sm-3">Description:</dt>
+      <dd class="col-sm-9">{{ item.description }}</dd>
+
+      <dt class="col-sm-3">Total Unit sold:</dt>
+      <dd class="col-sm-9">{{ total_unit }}</dd>
+
+      <dt class="col-sm-3">Earned from this item:</dt>
+      <dd class="col-sm-9">{{ total_amount }}</dd>
+    </dl>
+    <a href="{% url 'bnh:item-list' %}" class="btn btn-secondary">Back to Item List</a>
+  </div>
+{% endblock %}
