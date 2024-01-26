@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .forms import DoctorForm, PatientForm, BillForm, BillPaymentForm, ItemForm, item_formset
-from .models import Doctor, Patient, Bill, Item, ItemCount
+from .models import Doctor, Patient, Bill, Item, ItemCount, BillPayment
 from django.contrib import messages
+from django.db.models import Q
+from datetime import datetime
 
 
 def home(request):
@@ -179,3 +181,32 @@ def get_price(request, pk):
     item = Item.objects.get(pk=pk).rate
     return JsonResponse({'price':item})
 
+def summary(request):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    # Default values or validation for start_date and end_date
+    if not start_date or not end_date:
+        # Provide default values or handle the error as needed
+        start_date = '2023-01-01'
+        end_date = '2023-12-31'
+
+    start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+    # Filter the BillPayment instances between the specified date range
+    filtered_payments = BillPayment.objects.filter(
+        Q(payment_date__gte=start_date) & Q(payment_date__lte=end_date)
+    )
+    total = 0
+    if filtered_payments:
+        for filter in filtered_payments:
+            total += filter.paid_amount
+
+    context = {
+        'filtered_payments': filtered_payments,
+        'total': total
+    }
+
+    # Pass the filtered_payments to the template
+    return render(request, 'summary.html', context)

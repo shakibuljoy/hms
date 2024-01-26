@@ -1,14 +1,14 @@
 from django.urls import path
 from .views import (home, doctor_create, patient_create, bill_create, bill_list, bill_payment,
                      bill_pdf, item_list, item_create, get_price, patient_list,
-                     patient_detail
+                     patient_detail, summary
                      )
 
 
 app_name = 'bnh'
 
 urlpatterns = [
-    path('', patient_list, name='home'),
+    path('', summary, name='home'),
     path('patient/', patient_list, name='patient-list'),
     path('patient/detail/<pk>/', patient_detail, name='patient-detail'),
     path('doctor/', doctor_create, name='doctor'),
