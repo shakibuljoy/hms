@@ -25,6 +25,14 @@ def patient_list(request):
     }
     return render(request, 'patient_list.html', context)
 
+def patient_detail(request,pk):
+    patient = get_object_or_404(Patient, pk=pk)
+    meta_fields = patient._meta.fields
+    context = {
+        'patient':patient,
+        'meta_fields': meta_fields
+    }
+    return render(request, 'patient_detail.html', context)
 
 @login_required
 def doctor_create(request):
@@ -99,7 +107,7 @@ def bill_create(request, pk):
                         charge_amount+=item.amount()
                     bill.charges = charge_amount
                     bill.save()
-            return HttpResponse("Succesfully saved")
+            return redirect('bnh:bill-pdf', pk=bill.id)
     formset = item_formset(prefix='_itemcount_')
     bill_form = BillForm()
     context = {
@@ -170,3 +178,4 @@ def bill_pdf(request, pk):
 def get_price(request, pk):
     item = Item.objects.get(pk=pk).rate
     return JsonResponse({'price':item})
+

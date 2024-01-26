@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2>Patient Detail</h2>
+    <dl class="row">
+      <dt class="col-sm-3">Patient Type:</dt>
+      <dd class="col-sm-9">{{ patient.get_patient_type_display }}</dd>
+
+      <dt class="col-sm-3">Name:</dt>
+      <dd class="col-sm-9">{{ patient.name }}</dd>
+
+      <dt class="col-sm-3">Father:</dt>
+      <dd class="col-sm-9">{{ patient.father }}</dd>
+
+      <dt class="col-sm-3">Age:</dt>
+      <dd class="col-sm-9">{{ patient.age }}</dd>
+
+      <dt class="col-sm-3">Gender:</dt>
+      <dd class="col-sm-9">{{ patient.gender }}</dd>
+
+      <dt class="col-sm-3">Mobile:</dt>
+      <dd class="col-sm-9">{{ patient.mobile }}</dd>
+
+      <dt class="col-sm-3">Admit Time:</dt>
+      <dd class="col-sm-9">{{ patient.admit_time }}</dd>
+    </dl>
+    <a href="{% url 'bnh:patient-list' %}" class="btn btn-secondary">Back to Patient List</a>
+  </div>
+{% endblock %}

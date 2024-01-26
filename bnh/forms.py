@@ -71,10 +71,10 @@ class BillForm(forms.ModelForm):
         fields = ['serv_charge', 'discount', 'vat', 'paid']
 
         widgets = {
-            'serv_charge': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged()', 'onkeyup': 'amountChanged()'}),
-            'discount': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged()', 'onkeyup': 'amountChanged()'}),
-            'vat': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged()', 'onkeyup': 'amountChanged()'}),
-            'paid': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged()', 'onkeyup': 'amountChanged()'}),
+            'serv_charge': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged(serv_charge=true)', 'onkeyup': 'amountChanged(serv_charge=true)'}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged(serv_charge=false)', 'onkeyup': 'amountChanged(false)'}),
+            'vat': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged(serv_charge=false)', 'onkeyup': 'amountChanged(false)'}),
+            'paid': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged(serv_charge=false)', 'onkeyup': 'amountChanged(false)'}),
         }
 
 class BillPaymentForm(forms.ModelForm):

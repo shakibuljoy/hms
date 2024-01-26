@@ -71,14 +71,14 @@ class Bill(models.Model):
     id = models.AutoField(primary_key=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     charges = models.DecimalField(default=0, decimal_places=2, max_digits=70)
-    serv_charge = models.IntegerField(default=0, verbose_name='Service Charge 20%')
+    serv_charge = models.IntegerField(default=0, verbose_name='Service Charge 20%', blank=True, null=True)
     discount = models.IntegerField(default=0)
     vat = models.IntegerField(default=0, verbose_name='VAT %')
     date_create = models.DateTimeField(auto_now=True)
     paid = models.IntegerField(default=0, verbose_name='Paid Amount')
 
     def __str__(self):
-        return f"{self.patient.name} of {self.patient.doctor}"
+        return f"{self.id}-{self.patient.name} of {self.patient.doctor}"
 
     def calculate_amount(self):
 
@@ -100,6 +100,9 @@ class ItemCount(models.Model):
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     unit = models.DecimalField(default=1, decimal_places=2, max_digits=40)
+
+    def __str__(self):
+        return self.item.name
 
 
     def amount(self):

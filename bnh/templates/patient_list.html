@@ -41,7 +41,10 @@
                     <td>{{ patient.age }}</td>
                     <td>{{ patient.doctor }}</td>
                     <td>{{ patient.patient_type }}</td>
-                    <td><a href="{% url 'bnh:bill-list' patient.id %}"><i style="font-size: 1.5rem;" class="fa-solid fa-file-invoice-dollar"></i></a></td>
+                    <td>
+                        <a href="{% url 'bnh:bill-list' patient.id %}"><i style="font-size: 1.5rem;" class="fa-solid fa-file-invoice-dollar"></i></a>
+                        <a class="ml-2" href="{% url 'bnh:patient-detail' patient.id %}"><i style="font-size: 1.5rem;" class="fa-solid fa-circle-info"></i></a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

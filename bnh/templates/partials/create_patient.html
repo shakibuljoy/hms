@@ -1,10 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<div class="container mt-4">
+    <h2>Create Patient</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="row">
+        <div class="col-md-6">
+          <!-- Required Fields -->
+          {% for field in form %}
+            {% if field.field.required %}
+              <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                  <small class="text-danger">{{ field.errors|first }}</small>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        
+        <div class="col-md-6">
+          <!-- Non-Required Fields -->
+          {% for field in form %}
+            {% if not field.field.required %}
+              <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                  <small class="text-danger">{{ field.errors|first }}</small>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
 {% endblock content %}
 {%block jsscript%}
 <script>

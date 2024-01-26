@@ -155,7 +155,7 @@ function itemChange(selectElement) {
         itemAmount.textContent = itemRate * getValue; 
         amountChanged()
     }
-    function amountChanged(){
+    function amountChanged(serv_charge){
         const popo = document.querySelectorAll('.amount')
         const amountField = document.querySelector('input[name="serv_charge"]')
         const vatField = document.querySelector('input[name="vat"]')
@@ -168,8 +168,13 @@ function itemChange(selectElement) {
             totalAmount += parseFloat(amount.textContent);
         });
         totalDisplay.textContent = totalAmount.toFixed(2);
-        let calculatedAmount = (totalAmount * 0.2).toFixed(2);
-        amountField.value = calculatedAmount;
+        let calculatedAmount = 0
+        if (!serv_charge){ 
+          calculatedAmount += parseFloat((totalAmount * 0.2).toFixed(2));
+          amountField.value = calculatedAmount;
+        }else{
+            {amountField.value? calculatedAmount += parseFloat(amountField.value): calculatedAmount += 0}
+        }
         totalBill.textContent = Number(totalAmount) + Number(calculatedAmount) + Number(vatField.value) - Number(discountField.value);
         if (totalAmount < 0) {
             buttonSubmit.style.display = 'none';
