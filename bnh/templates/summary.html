@@ -17,9 +17,13 @@
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary mt-4">Filter</button>
             </div>
-            <h1>Total Amount <span class="badge badge-secondary">{{total}}</span></h1>
         </div>
     </form>
+  
+        <button class="btn btn-warning mt-4" onclick="printSummary()">Print</button>
+    <div id="printable">
+    <h4>From <strong>{{start_date}}</strong>  to <strong>{{end_date}}</strong></h4>
+    <h1>Total Amount <span class="badge badge-secondary">{{total}}</span></h1>
 
     <table class="table">
         <thead>
@@ -39,6 +43,39 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
+    
 
 </div>
+{%block jsscript%}
+<script>
+    function printSummary() {
+        // Specify the id of the element you want to print
+        var elementId = 'printable';
+
+        // Create a new window and document
+        var printWindow = window.open('', '_blank');
+
+        // Append the HTML content to the new window
+        printWindow.document.write('<html><head><title>Print</title>');
+        printWindow.document.write('</head><body>');
+
+        // Append the content of the specified element to the new window
+        printWindow.document.write(document.getElementById(elementId).innerHTML);
+
+        // Close the HTML tags
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+
+        // Print the new window
+        printWindow.print();
+        printWindow.onafterprint = function () {
+            // Close the new window after printing
+            printWindow.close();
+        };
+    }
+</script>
+
+
+{%endblock jsscript%}
 {%endblock %}

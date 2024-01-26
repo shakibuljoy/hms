@@ -205,7 +205,9 @@ def summary(request):
 
     context = {
         'filtered_payments': filtered_payments,
-        'total': total
+        'total': total,
+        'start_date':request.GET.get('start_date'),
+        'end_date':request.GET.get('end_date')
     }
 
     # Pass the filtered_payments to the template
