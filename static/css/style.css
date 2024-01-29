@@ -8343,3 +8343,16 @@ a[data-toggle="collapse"] {
     width: 100%;
     border-width: 3px;
   }
+
+  @media print {
+  body * {
+    visibility: hidden;
+  }
+  #printableArea, #printableArea * {
+    visibility: visible;
+  }
+  #printableArea {
+    /* Print-specific styles */
+    page-break-inside: avoid; /* Prevent content from breaking across pages */
+  }
+}

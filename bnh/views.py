@@ -214,16 +214,25 @@ def summary(request):
     end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
     # Filter the BillPayment instances between the specified date range
-    filtered_payments = BillPayment.objects.filter(
-        Q(payment_date__gte=start_date) & Q(payment_date__lte=end_date)
+    bills = Bill.objects.filter(
+        Q(date_create__gte=start_date) & Q(date_create__lte=end_date)
     )
     total = 0
-    if filtered_payments:
-        for filter in filtered_payments:
-            total += filter.paid_amount
+    all_bills = []
+    if bills:
+        for bill in bills:
+            paid_amount = 0
+            for payment in bill.ref_bill.all():
+                paid_amount += payment.paid_amount
+            data = {
+                'bill': bill,
+                'paid_amount': paid_amount,
+            }
+            all_bills.append(data)
+            total += bill.grand_total()
 
     context = {
-        'filtered_payments': filtered_payments,
+        'bills': all_bills,
         'total': total,
         'start_date':request.GET.get('start_date'),
         'end_date':request.GET.get('end_date')

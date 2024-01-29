@@ -21,26 +21,35 @@
     </form>
   
         <button class="btn btn-warning mt-4" onclick="printSummary()">Print</button>
-    <div id="printable">
+    <div id="printableArea">
     <h4>From <strong>{{start_date}}</strong>  to <strong>{{end_date}}</strong></h4>
-    <h1>Total Amount <span class="badge badge-secondary">{{total}}</span></h1>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Bill ID</th>
+                <th>Date</th>
+                <th>Sub-Total</th>
+                <th>Discount</th>
+                <th>Gross Total</th>
                 <th>Paid Amount</th>
-                <th>Payment Date</th>
+                <th>Due </th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for payment in filtered_payments %}
+            {% for item in bills %}
                 <tr>
-                    <td>{{ payment.bill.id }}</td>
-                    <td>{{ payment.paid_amount }}</td>
-                    <td>{{ payment.payment_date }}</td>
+                    <td class="bil_id">{{ item.bill.id }}</td>
+                    <td  >{{ item.bill.date_create }}</td>
+                    <td class="sub_total">{{ item.bill.sub_total}}</td>
+                    <td class="discount">{{ item.bill.discount }}</td>
+                    <td class="grand_total">{{ item.bill.grand_total }}</td>
+                    <td class="amount">{{ item.paid_amount }}</td>
+                    <td class="due_amount">{{ item.bill.due_amount }}</td>
                 </tr>
-            {% endfor %}
+                {% endfor %}
+           
         </tbody>
     </table>
     </div>
@@ -50,29 +59,7 @@
 {%block jsscript%}
 <script>
     function printSummary() {
-        // Specify the id of the element you want to print
-        var elementId = 'printable';
-
-        // Create a new window and document
-        var printWindow = window.open('', '_blank');
-
-        // Append the HTML content to the new window
-        printWindow.document.write('<html><head><title>Print</title>');
-        printWindow.document.write('</head><body>');
-
-        // Append the content of the specified element to the new window
-        printWindow.document.write(document.getElementById(elementId).innerHTML);
-
-        // Close the HTML tags
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-
-        // Print the new window
-        printWindow.print();
-        printWindow.onafterprint = function () {
-            // Close the new window after printing
-            printWindow.close();
-        };
+        window.print()
     }
 </script>
 

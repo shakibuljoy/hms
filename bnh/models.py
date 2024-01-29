@@ -40,10 +40,7 @@ class Patient(models.Model):
     father = models.CharField(max_length=120)
     mother = models.CharField(max_length=120, blank=True, null=True)
     gender = models.CharField(max_length=50, choices=gender_ch)
-    village = models.CharField(max_length=120, blank=True, null=True)
-    post = models.CharField(max_length=120, blank=True, null=True)
-    police_station = models.CharField(max_length=120, blank=True, null=True)
-    district = models.CharField(max_length=120, blank=True, null=True)
+    address = models.CharField(max_length=250)
     ref_by = models.CharField(max_length=120, blank=True, null=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True, blank=True)
     age =  models.IntegerField(default=0)
@@ -74,7 +71,7 @@ class Bill(models.Model):
     serv_charge = models.IntegerField(default=0, verbose_name='Service Charge 20%', blank=True, null=True)
     discount = models.IntegerField(default=0)
     vat = models.IntegerField(default=0, verbose_name='VAT %')
-    date_create = models.DateTimeField(auto_now=True)
+    date_create = models.DateTimeField(auto_now_add=True)
     paid = models.IntegerField(default=0, verbose_name='Paid Amount')
 
     def __str__(self):
@@ -89,9 +86,12 @@ class Bill(models.Model):
 
         # Format and return the amount (adjust as needed)
         return round(total_charges, 2)  # Round to two decimal places
+    def sub_total(self):
+        return self.calculate_amount()+self.serv_charge
     
     def grand_total(self):
         return self.calculate_amount()+self.serv_charge-self.discount
+    
     
     def due_amount(self):
         return self.grand_total()-self.paid
@@ -109,8 +109,8 @@ class ItemCount(models.Model):
         return round(self.item.rate * self.unit, 2)
 
 class BillPayment(models.Model):
-    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name="ref_bill")
     paid_amount = models.IntegerField(default=0)
-    payment_date =  models.DateTimeField(auto_now=True)
+    payment_date =  models.DateTimeField(auto_now_add=True)
 
     
