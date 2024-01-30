@@ -24,13 +24,19 @@
     <div id="printableArea">
     <h4>From <strong>{{start_date}}</strong>  to <strong>{{end_date}}</strong></h4>
 
-    <table class="table table-striped">
+    <table class="table table-striped" style="text-align:right;;">
         <thead>
             <tr>
                 <th>Bill ID</th>
                 <th>Date</th>
+                <th>Patient</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Doctor</th>
+                <th>Refers Doctor</th>
                 <th>Sub-Total</th>
                 <th>Discount</th>
+                <th>Discounted By</th>
                 <th>Gross Total</th>
                 <th>Paid Amount</th>
                 <th>Due </th>
@@ -40,13 +46,19 @@
         <tbody>
             {% for item in bills %}
                 <tr>
-                    <td class="bil_id">{{ item.bill.id }}</td>
-                    <td  >{{ item.bill.date_create }}</td>
-                    <td class="sub_total">{{ item.bill.sub_total}}</td>
-                    <td class="discount">{{ item.bill.discount }}</td>
-                    <td class="grand_total">{{ item.bill.grand_total }}</td>
-                    <td class="amount">{{ item.paid_amount }}</td>
-                    <td class="due_amount">{{ item.bill.due_amount }}</td>
+                    <td >{{ item.bill.id }}</td>
+                    <td>{{ item.bill.date_create|date:'d-m-Y' }}</td>
+                    <td  >{{ item.bill.patient.name }}</td>
+                    <td  >{{ item.bill.patient.mobile }}</td>
+                    <td  >{{ item.bill.patient.address }}</td>
+                    <td  >{{ item.bill.patient.doctor }}</td>
+                    <td  >{{ item.bill.note }}</td>
+                    <td>{{ item.bill.sub_total}}</td>
+                    <td >{{ item.bill.discount }}</td>
+                    <td >{{ item.bill.discounted_by }}</td>
+                    <td >{{ item.bill.grand_total }}</td>
+                    <td>{{ item.paid_amount }}</td>
+                    <td>{{ item.bill.due_amount }}</td>
                 </tr>
                 {% endfor %}
            
@@ -62,7 +74,60 @@
         window.print()
     }
 </script>
+<script>
+    const table = document.querySelector('table');
 
+// Array to store the totals for each column
+const columnTotals = [];
+
+// Function to calculate the total for a given column index
+function calculateColumnTotal(columnIndex) {
+  let total = 0;
+  const cells = table.querySelectorAll(`tr td:nth-child(${columnIndex})`);
+  cells.forEach(cell => {
+    const value = parseFloat(cell.textContent);
+    if (!isNaN(value)) {
+      total += value;
+    }
+  });
+  return total;
+}
+
+// Calculate the totals for the desired columns
+const amountColumns = [3, 4, 5, 6, 7]; // Indices of columns containing amounts
+amountColumns.forEach(columnIndex => {
+  const total = calculateColumnTotal(columnIndex);
+  columnTotals.push(total);
+});
+const totalRow = document.createElement('tr');
+totalRow.classList.add("bg-warning");
+const text1 = document.createElement('td');
+text1.textContent = "Total";
+const text2 = document.createElement('td');
+text2.textContent = "Value: ";
+totalRow.appendChild(text1);
+totalRow.appendChild(text2);
+
+amountColumns.forEach((columnIndex, index) => {
+    // Create a new table cell element
+    const cell = document.createElement('td');
+    const strong = document.createElement('strong');
+    
+  
+    // Add the calculated total for the current column
+    strong.textContent = columnTotals[index];
+    cell.appendChild(strong);
+  
+  
+    // Append the cell to the new row
+    totalRow.appendChild(cell);
+  });
+  const tBody = document.querySelector('tbody');
+  tBody.appendChild(totalRow)
+
+// Display the totals (replace with your desired output format)
+console.log(columnTotals);
+</script>
 
 {%endblock jsscript%}
 {%endblock %}

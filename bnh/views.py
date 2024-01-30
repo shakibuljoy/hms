@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.db.models import Q
 from datetime import datetime
 
+from openpyxl import Workbook
+
 
 def home(request):
     patient = Patient.objects.all()
@@ -203,40 +205,91 @@ def get_price(request, pk):
 def summary(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
+    if start_date and end_date:
+        
 
-    # Default values or validation for start_date and end_date
-    if not start_date or not end_date:
-        # Provide default values or handle the error as needed
-        start_date = '2023-01-01'
-        end_date = '2023-12-31'
+        # Default values or validation for start_date and end_date
+        # if not start_date or not end_date:
+            # Provide default values or handle the error as needed
+            # start_date = '2023-01-01'
+            # end_date = '2023-12-31'
 
-    start_date = datetime.strptime(start_date, '%Y-%m-%d')
-    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
-    # Filter the BillPayment instances between the specified date range
-    bills = Bill.objects.filter(
-        Q(date_create__gte=start_date) & Q(date_create__lte=end_date)
-    )
-    total = 0
-    all_bills = []
-    if bills:
-        for bill in bills:
-            paid_amount = 0
-            for payment in bill.ref_bill.all():
-                paid_amount += payment.paid_amount
-            data = {
-                'bill': bill,
-                'paid_amount': paid_amount,
-            }
-            all_bills.append(data)
-            total += bill.grand_total()
+        # Filter the BillPayment instances between the specified date range
+        bills = Bill.objects.filter(
+            Q(date_create__gte=start_date) & Q(date_create__lte=end_date)
+        )
+        total = 0
+        all_bills = []
+        if bills:
+            for bill in bills:
+                paid_amount = 0
+                for payment in bill.ref_bill.all():
+                    paid_amount += payment.paid_amount
+                data = {
+                    'bill': bill,
+                    'paid_amount': paid_amount,
+                }
+                all_bills.append(data)
+                total += bill.grand_total()
+        
 
-    context = {
-        'bills': all_bills,
-        'total': total,
-        'start_date':request.GET.get('start_date'),
-        'end_date':request.GET.get('end_date')
-    }
+        # context = {
+        #     'bills': all_bills,
+        #     'total': total,
+        #     'start_date':request.GET.get('start_date'),
+        #     'end_date':request.GET.get('end_date')
+        # }
+        wb = Workbook()
+        ws = wb.active
 
-    # Pass the filtered_payments to the template
-    return render(request, 'summary.html', context)
+        # Write headers
+        ws.append(['Bill ID', 'Date', 'Patient','Mobile', 'Address', 'Doctor', 'Refers Doctor', 'Sub-Total', 'Discount', 'Discounted_by', 'Gross Total', 'Paid Amount', 'Due Amount'])
+
+        # Write data rows
+        for obj in all_bills:
+            date_create = obj['bill'].date_create.strftime("%Y-%m-%d")
+            doctor_name = ""
+            if obj['bill'].patient.doctor is not None:
+                doctor_name = obj['bill'].patient.doctor.name
+            if obj['bill']:
+                ws.append([obj['bill'].id,date_create,obj['bill'].patient.name,obj['bill'].patient.mobile,obj['bill'].patient.address,
+                        doctor_name, obj['bill'].note,obj['bill'].sub_total(),obj['bill'].discount,obj['bill'].discounted_by,obj['bill'].grand_total(),
+                        obj['paid_amount'], obj['bill'].due_amount()])
+
+        # Create response
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
+
+        # Write workbook to response
+        wb.save(response)
+
+        return response
+    else:
+        return render(request, 'summary.html')
+
+def export_data(request):
+    # Fetch data
+    data = Item.objects.all()
+
+    # Create workbook and sheet
+    wb = Workbook()
+    ws = wb.active
+
+    # Write headers
+    ws.append(['name', 'description', 'rate'])
+
+    # Write data rows
+    for obj in data:
+        ws.append([obj.name, obj.description, obj.rate])
+
+    # Create response
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="data.xlsx"'
+
+    # Write workbook to response
+    wb.save(response)
+
+    return response

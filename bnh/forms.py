@@ -65,13 +65,15 @@ item_formset = formset_factory(ItemAmountForm, extra=2)
 class BillForm(forms.ModelForm):
     class Meta:
         model = Bill
-        fields = ['serv_charge', 'discount', 'vat', 'paid']
+        fields = ['serv_charge','discounted_by', 'discount', 'vat', 'paid', 'note']
 
         widgets = {
             'serv_charge': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged(serv_charge=true)', 'onkeyup': 'amountChanged(serv_charge=true)'}),
+            'discounted_by': forms.TextInput(attrs={'class': 'form-control'}),
             'discount': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged(serv_charge=false)', 'onkeyup': 'amountChanged(false)'}),
             'vat': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged(serv_charge=false)', 'onkeyup': 'amountChanged(false)'}),
             'paid': forms.NumberInput(attrs={'class': 'form-control', 'onchange': 'amountChanged(serv_charge=false)', 'onkeyup': 'amountChanged(false)'}),
+            'note': forms.Textarea(attrs={'cols':'30', 'rows':'5'}),
         }
 
 class BillPaymentForm(forms.ModelForm):

@@ -69,6 +69,8 @@ class Bill(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     charges = models.DecimalField(default=0, decimal_places=2, max_digits=70)
     serv_charge = models.IntegerField(default=0, verbose_name='Service Charge 20%', blank=True, null=True)
+    discounted_by = models.CharField(max_length=200, blank=True, null=True)
+    note = models.CharField(max_length=200, blank=True, null=True)
     discount = models.IntegerField(default=0)
     vat = models.IntegerField(default=0, verbose_name='VAT %')
     date_create = models.DateTimeField(auto_now_add=True)
